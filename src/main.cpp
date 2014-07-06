@@ -1422,11 +1422,12 @@ unsigned int static KittehGravityWell(const CBlockIndex* pindexLast, const CBloc
 		PastDifficultyAveragePrev = PastDifficultyAverage;
 
 
+/*
 		if (BlockReading->nHeight > HARDFORK_HEIGHT_2 && LatestBlockTime < BlockReading->GetBlockTime()) {
 			//eliminates the ability to go back in time
 			LatestBlockTime = BlockReading->GetBlockTime();
 		}
-
+*/
 
 		PastRateActualSeconds = BlockLastSolved->GetBlockTime() - BlockReading->GetBlockTime();
 		PastRateTargetSeconds = TargetBlocksSpacingSeconds * PastBlocksMass;

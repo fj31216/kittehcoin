@@ -1493,10 +1493,11 @@ unsigned int static GetNextWorkRequired_V3(const CBlockIndex* pindexLast, const 
 
 unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock)
 {
+    if(pindexLast->nHeight <= HARDFORK_HEIGHT_1 && !GetBoolArg("-testnet", false) && !GetBoolArg("-usekgw", false)) return GetNextWorkRequired_V1(pindexLast, pblock); 
+    else {
     if(pindexLast->nHeight <= HARDFORK_HEIGHT_2 && !GetBoolArg("-testnet", false) && !GetBoolArg("-usekgw", false)) return GetNextWorkRequired_V2(pindexLast, pblock); 
     else return GetNextWorkRequired_V3(pindexLast, pblock);
-    if(pindexLast->nHeight <= HARDFORK_HEIGHT_1 && !GetBoolArg("-testnet", false) && !GetBoolArg("-usekgw", false)) return GetNextWorkRequired_V1(pindexLast, pblock); 
-    else return GetNextWorkRequired_V2(pindexLast, pblock);
+    }
 }
 
 bool CheckProofOfWork(uint256 hash, unsigned int nBits)

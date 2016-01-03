@@ -359,7 +359,7 @@ unsigned int LimitOrphanTxSize(unsigned int nMaxOrphans)
 bool CTxOut::IsDust() const
 {
     // KittehCoin: IsDust() detection disabled, allows any valid dust to be relayed.
-    // The fees imposed on each dust txo is considered sufficient spam deterrant. 
+    // The fees imposed on each dust txo is considered sufficient spam deterrant.
     return false;
 }
 
@@ -1295,7 +1295,7 @@ unsigned int static GetNextWorkRequired_V1(const CBlockIndex* pindexLast, const 
     int64 nActualTimespan = pindexLast->GetBlockTime() - pindexFirst->GetBlockTime();
     printf("  nActualTimespan = %"PRI64d"  before bounds\n", nActualTimespan);
 
-    if(pindexLast->nHeight+1 > 10000)   
+    if(pindexLast->nHeight+1 > 10000)
     {
         if (nActualTimespan < nTargetTimespan/4)
             nActualTimespan = nTargetTimespan/4;
@@ -1309,7 +1309,7 @@ unsigned int static GetNextWorkRequired_V1(const CBlockIndex* pindexLast, const 
         if (nActualTimespan > nTargetTimespan*4)
             nActualTimespan = nTargetTimespan*4;
     }
-    else 
+    else
     {
         if (nActualTimespan < nTargetTimespan/16)
             nActualTimespan = nTargetTimespan/16;
@@ -1350,19 +1350,20 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const CBloc
     double              EventHorizonDeviation;
     double              EventHorizonDeviationFast;
     double              EventHorizonDeviationSlow;
-    
+
     if (BlockLastSolved == NULL || BlockLastSolved->nHeight == 0 || (uint64)BlockLastSolved->nHeight < PastBlocksMin) { return bnProofOfWorkLimit.GetCompact(); }
 	int64 LatestBlockTime = BlockLastSolved->GetBlockTime();
-    
+
     for (unsigned int i = 1; BlockReading && BlockReading->nHeight > 0; i++) {
         if (PastBlocksMax > 0 && i > PastBlocksMax) { break; }
         PastBlocksMass++;
-        
+
         if (i == 1) { PastDifficultyAverage.SetCompact(BlockReading->nBits); }
         else { PastDifficultyAverage = ((CBigNum().SetCompact(BlockReading->nBits) - PastDifficultyAveragePrev) / i) + PastDifficultyAveragePrev; }
         PastDifficultyAveragePrev = PastDifficultyAverage;
 
 /*
+		// KGW timewarp fix
 		if (BlockReading->nHeight > HARDFORK_HEIGHT_2 && LatestBlockTime < BlockReading->GetBlockTime()) {
 			//eliminates the ability to go back in time
 			LatestBlockTime = BlockReading->GetBlockTime();
@@ -1372,7 +1373,7 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const CBloc
         PastRateActualSeconds           = BlockLastSolved->GetBlockTime() - BlockReading->GetBlockTime();
         PastRateTargetSeconds           = TargetBlocksSpacingSeconds * PastBlocksMass;
         PastRateAdjustmentRatio         = double(1);
-        
+
 		if (BlockReading->nHeight > HARDFORK_HEIGHT_2){
 			//this might slow down the upward difficulty change
 			if (PastRateActualSeconds < 7) { PastRateActualSeconds = 7; }
@@ -1393,14 +1394,14 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const CBloc
 
         EventHorizonDeviationFast       = EventHorizonDeviation;
         EventHorizonDeviationSlow       = 1 / EventHorizonDeviation;
-        
+
         if (PastBlocksMass >= PastBlocksMin) {
             if ((PastRateAdjustmentRatio <= EventHorizonDeviationSlow) || (PastRateAdjustmentRatio >= EventHorizonDeviationFast)) { assert(BlockReading); break; }
         }
         if (BlockReading->pprev == NULL) { assert(BlockReading); break; }
         BlockReading = BlockReading->pprev;
     }
-    
+
     CBigNum bnNew(PastDifficultyAverage);
     if (PastRateActualSeconds != 0 && PastRateTargetSeconds != 0) {
         bnNew *= PastRateActualSeconds;
@@ -1435,7 +1436,7 @@ unsigned int static GetNextWorkRequired_V3(const CBlockIndex* pindexLast, const 
         int64 PastSecondsMax = TimeDaySeconds * 0.14;
         uint64 PastBlocksMin = PastSecondsMin / BlocksTargetSpacing;
         uint64 PastBlocksMax = PastSecondsMax / BlocksTargetSpacing;
-        
+
         return KimotoGravityWell(pindexLast, pblock, BlocksTargetSpacing, PastBlocksMin, PastBlocksMax);
 }
 
@@ -1469,9 +1470,9 @@ unsigned int static GetNextWorkRequired(const CBlockIndex* pindexLast, const CBl
     }
 
 /*
-    if(pindexLast->nHeight <= HARDFORK_HEIGHT_1 && !GetBoolArg("-testnet", false) && !GetBoolArg("-usekgw", false)) return GetNextWorkRequired_V1(pindexLast, pblock); 
+    if(pindexLast->nHeight <= HARDFORK_HEIGHT_1 && !GetBoolArg("-testnet", false) && !GetBoolArg("-usekgw", false)) return GetNextWorkRequired_V1(pindexLast, pblock);
     else {
-    if(pindexLast->nHeight <= HARDFORK_HEIGHT_2 && !GetBoolArg("-testnet", false) && !GetBoolArg("-usekgw", false)) return GetNextWorkRequired_V2(pindexLast, pblock); 
+    if(pindexLast->nHeight <= HARDFORK_HEIGHT_2 && !GetBoolArg("-testnet", false) && !GetBoolArg("-usekgw", false)) return GetNextWorkRequired_V2(pindexLast, pblock);
     else return GetNextWorkRequired_V3(pindexLast, pblock);
     }
 */
@@ -1890,7 +1891,7 @@ bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, unsigne
 static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck() {
-    RenameThread("bitcoin-scriptch");
+    RenameThread("kittehcoin-scriptch");
     scriptcheckqueue.Thread();
 }
 
